@@ -1,159 +1,222 @@
 #include<iostream>
-
+#include<cmath>
+#include<vector>
+#include<algorithm>
+#include<string.h>
 using namespace std;
 
-void nhapHang(int hang,int vuong[5][5],int a[5][10000],int so)
-{
-	int h=hang-1;
-	for(int j=0;j<5;j++)
-	{
-		vuong[h][j]=a[j][so];
+bool checkSumEqualS(long a, long s){
+	while(a){
+		s-= (a%10);
+		a/=10;
 	}
+	return s==0;
 }
-void nhapCot(int cot,int vuong[5][5],int a[5][10000],int so)
-{
-	int c=cot-1;
-	for(int j=0;j<5;j++)
-	{
-		vuong[j][c]=a[j][so];
+vector<int> creatAVector(long a, int n){
+	vector<int> x;
+	while(a){
+		x.push_back(a%10);
+		a/=10;
 	}
+	reverse(x.begin()+0, x.begin()+ n);
+	return x;
 }
-void nhaptreo(int treo,int vuong[5][5],int a[5][10000],int so)
-{
- 	if(treo==1)
-  	{
-  		for(int j=0;j<5;j++)
-		{
-			vuong[j][j]=a[j][so];
-		}
- 	}
- 	else
- 	{
- 		 for(int j=0;j<5;j++)
-		{
-			vuong[4-j][j]=a[j][so];
-		}
-  	}
-}
-int main()
-{
-	int vuong[5][5];
-	int a[5][10000],n=0,s;
-	int kt=0;
-	cout<<"nhap s :";
-	cin >>s;
-	for(int i=10001;i<=99999;i=i+2)
-	{
-		int dem=0,xet,so=i; 
-		if(i%3==0||i%5==0||i%7==0) continue;
-			for(int j=1;j<=5;j++)
-			{
-				xet=so%10;
-				so/=10;
-				dem+=xet;
+vector<vector<int> > sieveOfEratothenes(int n, int s){
+	long m= pow(10, n);
+	bool prime1[m+1];
+	vector<vector<int> > arrayPrime;
+	memset(prime1, true, m);
+	for(long p=2; p<m; ++p){
+		if(prime1[p]){
+			if(p>=pow(10, n-1)){
+				if(checkSumEqualS(p, s))
+				arrayPrime.push_back(creatAVector(p,n));
 			}
-		if(dem!=s) continue;
-			dem=0;
-		for(int j=1;j<=i;j++)
-		{
-			if(i%j==0)
-			{
-				 dem++	;
-			} 
-		}
-		if(dem!=2) continue;
-		so=i;
-		for(int j=0;j<5;j++)
-			{
-				a[4-j][n]=so%10;
-				so/=10;
+			for(long k=p*2; k<m; k+=p){
+				prime1[k]=false;
 			}
-			n++;
 		}
-	for(int i=0;i<n&&kt==0;i++)
-	  {
-	    /*hang 1
-		  cot 1*/
-	    if(a[0][i]!=0&&a[1][i]!=0&&a[2][i]!=0&&a[3][i]!=0&&a[4][i]!=0)
-	    {
-		 nhapHang(1,vuong,a,i);
-		 nhapCot(1,vuong,a,i);
-		 for(int j=0;j<n&&kt==0;j++)
-	    {
-	    /*hang 5
-		  cot 5*/
-	      if(a[0][j]!=0&&a[1][j]!=0&&a[2][j]!=0&&a[3][j]!=0&&a[4][j]!=0&&a[0][j]==vuong[4][0]&&
-		    a[0][j]!=2&&a[1][j]!=2&&a[2][j]!=2&&a[3][j]!=2&&a[4][j]!=2&&
-			a[0][j]!=4&&a[1][j]!=4&&a[2][j]!=4&&a[3][j]!=4&&a[4][j]!=4&&
-			a[0][j]!=5&&a[1][j]!=5&&a[2][j]!=5&&a[3][j]!=5&&a[4][j]!=5&&
-			a[0][j]!=6&&a[1][j]!=6&&a[2][j]!=6&&a[3][j]!=6&&a[4][j]!=6&&
-			a[0][j]!=8&&a[1][j]!=8&&a[2][j]!=8&&a[3][j]!=8&&a[4][j]!=8)
-	     {
-		  nhapHang(5,vuong,a,j);
-		  nhapCot(5,vuong,a,j);
-		  for(int k=0;k<n&&kt==0;k++)
-	      {
-	    /*treo 1*/
-	      if(a[0][k]==vuong[0][0]&&a[4][k]==vuong[4][4])
-	      {
-		  nhaptreo(1,vuong,a,k);
-	       for(int l=0;l<n&&kt==0;l++)
-	      {
-	    /*treo 2*/
-	      if(a[0][l]==vuong[4][0]&&a[4][l]==vuong[0][4]&&a[2][l]==vuong[2][2]&&a[1][l]==a[3][l])
-	      {
-		  nhaptreo(2,vuong,a,l);
-	       for(int m=0;m<n&&kt==0;m++)
-	       {
-	    /*hang 2
-		  cot 2*/
-	       if(a[0][m]==vuong[1][0]&&a[1][m]==vuong[1][1]&&a[3][m]==vuong[1][3]&&a[4][m]==vuong[1][4])
-	       {
-		    nhapHang(2,vuong,a,m);
-	        nhapCot(2,vuong,a,m);
-	         for(int p=0;p<n&&kt==0;p++)
-	        {
-	    /*hang 3
-		  cot 3*/
-	         if(a[0][p]==vuong[2][0]&&a[1][p]==vuong[2][1]&&a[2][p]==vuong[2][2]&&a[4][p]==vuong[2][4])
-	        {
-		    nhapHang(3,vuong,a,p);
-	        nhapCot(3,vuong,a,p);
-	         for(int q=0;q<n;q++)
-	        { 
-	    /*hang 4
-		  cot 4*/
-	         if(a[0][q]==vuong[3][0]&&a[1][q]==vuong[3][1]&&a[2][q]==vuong[3][2]&&a[3][q]==vuong[3][3]&&a[4][q]==vuong[3][4])
-	         {
-		     nhapHang(4,vuong,a,q);
-	         nhapCot(4,vuong,a,q);
-	         cout<<"ket qua";
-	         kt=1;
-	         break;
-		     }
-		     }
-		    }
-		    }
-		   }
-		   }
-		  }
-		  }
-	     }
-		 }
-	    }
-	    }
-	  }
-	  }
-  	cout <<"\n===========================================================================\n";
-  for(int i=0;i<5;i++)
-	{
-	for(int j=0;j<5;j++)
-	{
-	cout<<vuong[j][i]<<"\t";
 	}
-	cout <<"\n";
+	return arrayPrime;
+}
+bool checkDifferenceOf0(vector<int> a){
+	for(int i=0; i<a.size();  ++i){
+		if(a[i]==0) return false;
 	}
-	cout <<"\n===========================================================================";
-	return 0;
+	return true;
+}
+bool fillSquare(int n, vector<vector<int> > arrayPrime, int p, int k, int ans[][100]){
+	bool f= false;
+	for(int i=p; i<arrayPrime.size(); ++i){
+		if(checkDifferenceOf0(arrayPrime[i])){
+			f=true;
+			for(int z=0; z<n; z++){
+				ans[0][z]=arrayPrime[i][z];
+			}
+			break;
+		}
 	}
+	if(f==false){
+		return false;
+	}
+	f=false;
+	for(int i=k; i<arrayPrime.size(); ++i){
+		if(checkDifferenceOf0(arrayPrime[i])){
+			f=true;
+			for(int z=0; z<n; z++){
+				ans[z][0]=arrayPrime[i][z];
+			}
+			break;
+		}
+	}
+	if(f==false){
+		return false;
+	}
+	f=false;
+	for(int i=0; i<arrayPrime.size(); ++i){
+		if(arrayPrime[i][0]==ans[n-1][0] && arrayPrime[i][n-1]==ans[0][n-1]){
+			f=true;
+			for(int z=0; z<n; ++z){
+				ans[n-z-1][z]=arrayPrime[i][z];
+			}
+			break;
+		}
+	}
+	if(f==false){
+		return false;
+	}
+	f=false;
+	for(int i=0; i<arrayPrime.size(); ++i){
+		if(arrayPrime[i][0]==ans[1][0] && arrayPrime[i][n-2]==ans[1][n-2]){
+			f=true;
+			for(int z=0; z<n; ++z){
+				ans[1][z]=arrayPrime[i][z];
+			}
+			break;
+		}
+	}
+	if(f==false){
+		return false;
+	}
+	f=false;
+	for(int i=0; i<arrayPrime.size(); ++i){
+		if(arrayPrime[i][0]==ans[0][1] && arrayPrime[i][1]==ans[1][1] && arrayPrime[i][n-2]==ans[n-2][1]){
+			f=true;
+			for(int z=0; z<n; ++z){
+				ans[z][1]=arrayPrime[i][z];
+			}
+			break;
+		}
+	}
+	if(f==false){
+		return false;
+	}
+	f=false;
+	for(int i=0; i<arrayPrime.size(); ++i){
+		if(arrayPrime[i][0]==ans[2][0] && arrayPrime[i][1]==ans[2][1] && arrayPrime[i][2]==ans[2][2]){
+			f=true;
+			for(int z=0; z<n; ++z){
+				ans[2][z]=arrayPrime[i][z];
+			}
+			break;
+		}
+	}
+	if(f==false){
+		return false;
+	}
+	f=false;
+	for(int i=0; i<arrayPrime.size(); ++i){
+		if(arrayPrime[i][0]==ans[0][2] && arrayPrime[i][1]==ans[1][2] && arrayPrime[i][2]== ans[2][2]){
+			f=true;
+			for(int z=0; z<n; ++z){
+				ans[z][2]=arrayPrime[i][z];
+			}
+			break;
+		}
+	}
+	if(f==false){
+		return false;
+	}
+	f=false;
+	for(int i=0; i<arrayPrime.size(); ++i){
+		if(arrayPrime[i][0]==ans[3][0] && arrayPrime[i][1]==ans[3][1] && arrayPrime[i][2]== ans[3][2]){
+			f=true;
+			for(int z=0; z<n; ++z){
+				ans[3][z]=arrayPrime[i][z];
+			}
+			break;
+		}
+	}
+	if(f==false){
+		return false;
+	}
+	f=false;
+	for(int i=0; i<arrayPrime.size(); ++i){
+		if(arrayPrime[i][0]==ans[0][3] && arrayPrime[i][1]==ans[1][3] && arrayPrime[i][2]== ans[2][3] && arrayPrime[i][3]==ans[3][3]){
+			f=true;
+			for(int z=0; z<n; ++z){
+				ans[z][3]=arrayPrime[i][z];
+			}
+			break;
+		}
+	}
+	if(f==false){
+		return false;
+	}
+	f=false;
+	for(int i=0; i<arrayPrime.size(); ++i){
+		if(arrayPrime[i][0]==ans[0][4] && arrayPrime[i][1]==ans[1][4] && arrayPrime[i][2]== ans[2][4] && arrayPrime[i][3]==ans[3][4]){
+			f=true;
+			for(int z=0; z<n; ++z){
+				ans[z][4]=arrayPrime[i][z];
+			}
+			break;
+		}
+	}
+	if(f==false){
+		return false;
+	}
+	f=false;
+	int sum=0;
+	for(int i=0; i<n; ++i){
+		sum+=ans[i][i];
+	}
+	if(sum!=17) return false;
+	return true;
+}
+void output(vector<vector<int> >arrayPrime, int n){
+	for(int i=0; i<arrayPrime.size(); ++i){
+		for(int j=0; j<arrayPrime[i].size(); ++j){
+			cout<<arrayPrime[i][j]<<" ";
+		}
+		cout<<endl;
+	}
+}
 
+void printSquare(int ans[][100], vector<vector<int> >arrayPrime, int n){
+	int static p=0, k=0;
+	for(p=0; p<arrayPrime.size(); ++p){
+		for(k=0; k<arrayPrime.size(); ++k){
+			if(fillSquare(n, arrayPrime, p, k, ans)){
+				for(int i=0; i<n; ++i){
+					for(int j=0; j<n; ++j){
+						cout<<ans[i][j]<<" ";
+					}
+					cout<<"\n";
+				}
+				return;
+			}
+		}
+	}
+	cout<<"NO finding!";
+	return ;
+}
+int main(){
+	int ans[100][100];
+	vector<vector<int> > arrayPrime;
+	int n, s;
+	cin>>n>>s;
+	arrayPrime = sieveOfEratothenes(n, s);
+	printSquare(ans, arrayPrime, n);
+	//output(arrayPrime, n);
+}
